@@ -471,6 +471,29 @@ The panel exposes two top-level tabs:
 - **Semantic SQL** — the query expressed against the Semantic Model (semantic views, measures, dimensions, and `MEASURE()` calls). This is the source of truth for the query and what the workbook stores.
 - **Generated SQL** — the SQL that Cube compiles from the Semantic SQL and sends to your data warehouse. Use it to understand exactly what runs against your database, debug performance, or share with a database administrator.
 
+### Where each part runs
+
+A query can run in more than one place: part of it in a data source, part in
+[Cube Store][ref-cube-store] when a pre-aggregation serves it, and the rest in
+Cube's own post-processing. The **Generated SQL** tab shows where each part runs:
+
+- A legend under the SQL names each place: a data source by its name, with its
+  logo when you can query source data, or **Cube Store**. Hover over or focus an
+  item to see the pre-aggregations that serve it.
+- When a query runs in more than one place, each part is tinted in the colour of
+  its place, and the parts Cube post-processes stay untinted. `default` is always
+  green and Cube Store always amber. Other data sources take four more colours in
+  name order, so a data source keeps its colour from query to query.
+- A query that runs entirely in one place is not tinted. The legend still names
+  the place.
+- A part that Cube pushes down as a whole SQL query is listed as **Unknown data
+  source** on Cube versions that don't report where it runs.
+
+**Copy** keeps a comment line around each part that names its place, such as
+`-- <executed in data source: default>` or
+`-- <executed in Cube Store; pre-aggregation: orders.main>`. The comments don't
+change what the SQL does, so you can still run it.
+
 The **Semantic SQL** tab also has a dropdown for viewing the same query in the formats accepted by Cube's [Core Data APIs][ref-core-data-apis]:
 
 - **Semantic JSON** — the [REST (JSON) API][ref-rest-api] query format
@@ -671,4 +694,5 @@ behaves as intended.
 [ref-calculated-fields-top-n]: /docs/explore-analyze/workbooks/calculated-fields#top-n-fields
 [ref-auto-run]: /reference/data-modeling/view#auto_run
 [ref-configuration-auto-run]: /docs/data-modeling/configuration#auto-run
+[ref-cube-store]: /docs/pre-aggregations/running-in-production#architecture
 
