@@ -588,7 +588,10 @@ fi
 The **Preview** result is the authority for your deployed model. This preview release supports
 YAML models, [Jinja-templated](#jinja-templates) ones included, `extends` between YAML cubes,
 one Databricks data source per published view, scalar dimensions, common aggregates and supported
-calculated measures, and many-to-one and one-to-one joins. A join condition that is not a plain
+calculated measures, and many-to-one and one-to-one joins. A
+[multi-stage](/reference/data-modeling/measures#multi_stage) measure of `type: number` without a
+stage modifier, such as a ratio of two other measures, publishes as a calculated measure: Cube
+computes it from the measures it references at the query's grain, so the values are the same. A join condition that is not a plain
 column equality, such as an SCD2 date range, an expression like `CAST(...)` or `date_trunc(...)`,
 or a comparison with a literal, is published as written in the Metric View join's `on`. The target
 uses Databricks Metric View YAML 1.1.
@@ -621,8 +624,13 @@ Preview **blocks** a view when it finds any of these conditions:
 - A cube `sql` that reads [context variables](/reference/data-modeling/context-variables), such
   as `{FILTER_PARAMS…}`, `{SECURITY_CONTEXT…}`, or `{COMPILE_CONTEXT…}` (`CUBE_CONTEXT_IN_SQL`):
   only Cube can fill them in, so remove them from the cube's `sql` or keep that view in Cube.
-- Unsupported expressions or types, or multi-stage, window, or ranking calculations: simplify
-  the model or keep that view in Cube.
+- Unsupported expressions or types, or window or ranking calculations: simplify the model or
+  keep that view in Cube.
+- A multi-stage measure with a stage modifier, such as
+  [`time_shift`](/reference/data-modeling/measures#time_shift), `grain`, `group_by`, `reduce_by`,
+  or `add_group_by`, a multi-stage measure of a type other than `number`, such as `rank`, or a
+  `rolling_window` measure: leave that measure, and every measure that references it, out of the
+  published view, or keep the view in Cube.
 
 An unsafe joined measure can be **withheld while the rest of its view is published**. That view
 may show **Created**, **Updated**, or **Unchanged**, and the run may show **Completed**, even
