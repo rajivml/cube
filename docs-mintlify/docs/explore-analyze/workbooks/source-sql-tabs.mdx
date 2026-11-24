@@ -46,8 +46,8 @@ You can query source SQL in two ways:
 - **Ask AI** – Use the AI agent to help you research your data source, build SQL queries, and refine results in real-time
 
 Click **Run** or press **Cmd+Enter** (macOS) or **Ctrl+Enter** (Windows/Linux)
-to run the query. Results show up to 5,000 rows. When a query fails, click
-**Fix in chat** to have the agent fix it.
+to run the query. When a query fails, click **Fix in chat** to have the
+agent fix it.
 
 Queries run with the [security context](/docs/explore-analyze/workbooks/querying-data#applying-a-security-context)
 selected in the header, if any.
@@ -55,3 +55,16 @@ selected in the header, if any.
 DDL statements, such as `CREATE` or `DROP`, run only when **Enable DDL
 operations in SQL** is turned on in the deployment's **Settings →
 Configuration**.
+
+## Row limit
+
+A query returns up to the deployment's
+[default row limit](/docs/data-modeling/configuration#default-row-limit),
+10,000 rows unless it was changed. To change the limit for a tab, click
+**Row limit** in the toolbar and enter a number up to the deployment's
+[maximum row limit](/docs/data-modeling/configuration#maximum-row-limit),
+50,000 rows unless it was changed. The query runs again with the new limit.
+Clear the field to go back to the default.
+
+The limit is saved with the tab. A CSV download holds the rows the tab
+loaded, so the limit applies to it too.
