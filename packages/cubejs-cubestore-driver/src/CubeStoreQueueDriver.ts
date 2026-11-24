@@ -16,13 +16,13 @@ import {
   QueryKeysTuple,
   QueuePriority,
 } from '@cubejs-backend/base-driver';
-import { getEnv, getProcessUid } from '@cubejs-backend/shared';
+import { getEnv, getProcessUid, createCacheHash } from '@cubejs-backend/shared';
 
 import { CubeStoreDriver } from './CubeStoreDriver';
 
 function hashQueryKey(queryKey: QueryKey, processUid?: string): QueryKeyHash {
   processUid = processUid || getProcessUid();
-  const hash = crypto.createHash('md5').update(JSON.stringify(queryKey)).digest('hex');
+  const hash = createCacheHash().update(JSON.stringify(queryKey)).digest('hex');
 
   if (typeof queryKey === 'object' && queryKey.persistent) {
     return `${hash}@${processUid}` as any;

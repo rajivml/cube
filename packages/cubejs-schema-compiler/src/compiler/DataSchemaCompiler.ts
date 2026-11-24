@@ -9,7 +9,7 @@ import R from 'ramda';
 import workerpool from 'workerpool';
 import { LRUCache } from 'lru-cache';
 
-import { FileContent, getEnv, isNativeSupported, SchemaFileRepository } from '@cubejs-backend/shared';
+import { FileContent, getEnv, isNativeSupported, SchemaFileRepository, createCacheHash } from '@cubejs-backend/shared';
 import { NativeInstance, newModelContext, PythonCtx, transpileJs, transpileYaml } from '@cubejs-backend/native';
 import type { ModelContext } from '@cubejs-backend/native';
 import { UserError } from './UserError';
@@ -933,7 +933,7 @@ export class DataSchemaCompiler {
       return '';
     }
 
-    const hash = crypto.createHash('md5');
+    const hash = createCacheHash();
 
     for (const f of macroFiles) {
       hash.update(f.fileName);
@@ -1183,7 +1183,7 @@ export class DataSchemaCompiler {
   ): Promise<(FileContent | undefined)> {
     // The YAML to JS output only depends on the content: YAML is transpiled once, in the
     // first phase, before any cube symbols are known. So the key is safe to share between apps.
-    const cacheKey = crypto.createHash('md5').update(file.content).digest('hex');
+    const cacheKey = createCacheHash().update(file.content).digest('hex');
 
     if (this.compiledYamlCache.has(cacheKey)) {
       const content = this.compiledYamlCache.get(cacheKey)!;
@@ -1239,7 +1239,7 @@ export class DataSchemaCompiler {
     errorsReport: ErrorReporter,
     options: TranspileOptions
   ): Promise<(FileContent | undefined)> {
-    const cacheKey = crypto.createHash('md5')
+    const cacheKey = createCacheHash()
       .update(file.content)
       .update('\0')
       .update(options.jinjaMacrosFingerprint || '')
@@ -1336,7 +1336,7 @@ export class DataSchemaCompiler {
 
   private getJsScript(file: FileContent): vm.Script {
     // The script carries its file name (stack traces), and the cache may be shared between apps
-    const cacheKey = crypto.createHash('md5')
+    const cacheKey = createCacheHash()
       .update(file.fileName)
       .update('\0')
       .update(file.content)
@@ -1353,7 +1353,7 @@ export class DataSchemaCompiler {
 
   private getSharedJsScript(file: FileContent): vm.Script {
     // Not the source getJsScript compiles (the wrapper), hence the prefix
-    const cacheKey = `shared:${crypto.createHash('md5')
+    const cacheKey = `shared:${createCacheHash()
       .update(file.fileName)
       .update('\0')
       .update(file.content)

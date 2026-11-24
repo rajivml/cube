@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { LRUCache } from 'lru-cache';
 
 import { Optional } from './type-helpers';
+import { createCacheHash } from './cacheDigest';
 
 export type PromiseLock = {
   promise: Promise<void>,
@@ -282,7 +283,7 @@ export const asyncDebounceFn = <Ret, Arguments>(
   });
 
   return async (...args: Arguments[]) => {
-    const key = crypto.createHash('md5')
+    const key = createCacheHash()
       .update(args.map((v) => JSON.stringify(v)).join(','))
       .digest('hex');
 

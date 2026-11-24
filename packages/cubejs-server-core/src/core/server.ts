@@ -10,8 +10,7 @@ import {
   ApiGatewayOptions,
   UserBackgroundContext
 } from '@cubejs-backend/api-gateway';
-import {
-  CancelableInterval,
+import { CancelableInterval,
   createCancelableInterval,
   formatDuration,
   getEnv,
@@ -27,8 +26,7 @@ import {
   track,
   FileRepository,
   SchemaFileRepository,
-  withLogRedaction,
-} from '@cubejs-backend/shared';
+  withLogRedaction, createCacheHash } from '@cubejs-backend/shared';
 
 import type { Application as ExpressApplication, Response as ExpressResponse, NextFunction as ExpressNextFunction } from 'express';
 
@@ -278,7 +276,7 @@ export class CubejsServerCore {
 
       if (!this.projectFingerprint) {
         try {
-          this.projectFingerprint = crypto.createHash('md5')
+          this.projectFingerprint = createCacheHash()
             .update(JSON.stringify(fs.readJsonSync('package.json')))
             .digest('hex');
         } catch (e) {
