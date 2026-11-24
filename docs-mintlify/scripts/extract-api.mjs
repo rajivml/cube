@@ -220,6 +220,7 @@ const EXCLUDE_OPERATIONS = new Set([
   'GET /api/v1/deployments/{deploymentId}/automations',
   'POST /api/v1/deployments/{deploymentId}/automations',
   'GET /api/v1/deployments/{deploymentId}/automations/{automationUuid}',
+  'PATCH /api/v1/deployments/{deploymentId}/automations/{automationUuid}',
   'GET /api/v1/deployments/{deploymentId}/automations/{automationUuid}/runs',
   'GET /api/v1/deployments/{deploymentId}/automations/{automationUuid}/webhook',
   'POST /api/v1/deployments/{deploymentId}/automations/{automationUuid}/webhook',
@@ -228,6 +229,7 @@ const EXCLUDE_OPERATIONS = new Set([
   'GET /api/v1/deployments/{deploymentId}/automation-runs',
   'GET /api/v1/deployments/{deploymentId}/automation-runs/{runUuid}',
   'GET /api/v1/deployments/{deploymentId}/automation-templates',
+  'POST /api/v1/deployments/{deploymentId}/automation-templates/{templateId}/instructions',
   'GET /api/v1/deployments/{deploymentId}/automation-triggers',
   'POST /api/v1/deployments/{deploymentId}/automations/{automationUuid}/runs',
   // Automation settings: flag-gated with the rest of automations (assertAutomationsEnabled).
