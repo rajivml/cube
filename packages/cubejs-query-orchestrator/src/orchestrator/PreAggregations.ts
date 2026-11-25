@@ -1,6 +1,6 @@
 import R from 'ramda';
-import crypto from 'crypto';
-import { getEnv, LoggerFn } from '@cubejs-backend/shared';
+
+import { getEnv, LoggerFn, createCacheHash } from '@cubejs-backend/shared';
 
 import { BaseDriver, CreateTableIndex, InlineTable, TableColumn, } from '@cubejs-backend/base-driver';
 import type { QueryKeyHash, TableQueryResult } from '@cubejs-backend/base-driver';
@@ -31,7 +31,7 @@ export function version(cacheKey: unknown) {
   let result = '';
 
   const hashCharset = 'abcdefghijklmnopqrstuvwxyz012345';
-  const digestBuffer = crypto.createHash('md5').update(JSON.stringify(cacheKey)).digest();
+  const digestBuffer = createCacheHash().update(JSON.stringify(cacheKey)).digest();
 
   let residue = 0;
   let shiftCounter = 0;

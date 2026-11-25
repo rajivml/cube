@@ -2319,6 +2319,15 @@ const variables: Record<string, (...args: any) => any> = {
   cubestoreSendableParameters: () => get('CUBEJS_CUBESTORE_SENDABLE_PARAMETERS')
     .default('true')
     .asBoolStrict(),
+  /**
+   * Digest used for cache keys, pre-aggregation table versions and memoisation.
+   * Not a security parameter. `md5` by default so cache keys are unchanged;
+   * set `sha256` where MD5 is unavailable, such as a host in FIPS mode.
+   */
+  cacheDigestAlgorithm: () => get('CUBEJS_CACHE_DIGEST_ALGORITHM')
+    .default('md5')
+    .asString(),
+
   externalDefault: () => get('CUBEJS_EXTERNAL_DEFAULT')
     .default('true')
     .asBoolStrict(),
