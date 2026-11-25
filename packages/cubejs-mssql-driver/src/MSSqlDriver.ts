@@ -43,6 +43,36 @@ for (const type of numericTypes) {
 export type MSSqlDriverConfiguration = Omit<MsSQLConfig, 'server'> & {
   readOnly?: boolean;
   server?: string;
+
+  /**
+   * The node-mssql flavour this driver builds its pool from. Defaults to `mssql`,
+   * which is backed by `tedious`.
+   *
+   * `tedious` is pure JavaScript and implements no GSSAPI, so it cannot do Kerberos
+   * integrated authentication on Linux — its `authentication.type` accepts `default`,
+   * `ntlm` and the Azure AD variants and nothing else. Reaching SQL Server as an Active
+   * Directory principal needs a native ODBC driver, which node-mssql ships as
+   * `mssql/msnodesqlv8`:
+   *
+   *     new MSSqlDriver({ connectionString, driverModule: await import('mssql/msnodesqlv8') })
+   *
+   * Nothing else here is transport-specific. Both flavours are
+   * `Object.assign({ ConnectionPool, Transaction, Request }, base.exports)` (node-mssql 11
+   * `lib/{tedious,msnodesqlv8}/index.js`), so `TYPES` and the value converters above are
+   * the same objects under either one.
+   *
+   * Passed in rather than selected by a flag because `msnodesqlv8` is a native addon
+   * needing a C++ toolchain and an ODBC driver manager at build time; a deployment
+   * authenticating with a SQL login should not have to carry either.
+   *
+   * Caveat, and the reason this takes a module rather than a driver name: requiring
+   * either flavour assigns `base.driver.{name,ConnectionPool,Transaction,Request}` on
+   * node-mssql's shared `base`, so the flavour required last wins process-wide for
+   * anything resolving through it. This driver only ever uses the `ConnectionPool` it is
+   * given, so two instances on different flavours coexist; module-level `sql.connect()`
+   * in the same process would not.
+   */
+  driverModule?: Pick<typeof sql, 'ConnectionPool'>;
 };
 
 const GenericTypeToMSSql: Record<string, string> = {
@@ -143,9 +173,10 @@ export class MSSqlDriver extends BaseDriver implements DriverInterface {
       ...config
     };
 
-    const { readOnly: _, ...poolConfig } = this.config;
+    const { readOnly: _, driverModule, ...poolConfig } = this.config;
+    const Pool = driverModule?.ConnectionPool ?? ConnectionPool;
 
-    this.pool = new ConnectionPool(poolConfig as MsSQLConfig);
+    this.pool = new Pool(poolConfig as MsSQLConfig);
     this.initialConnectPromise = this.pool.connect();
   }
 

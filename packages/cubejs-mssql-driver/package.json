@@ -29,7 +29,8 @@
   "scripts": {
     "build": "rm -rf dist && npm run tsc",
     "tsc": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "unit": "jest --coverage"
   },
   "dependencies": {
     "@cubejs-backend/base-driver": "1.8.34",
