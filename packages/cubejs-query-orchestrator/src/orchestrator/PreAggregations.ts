@@ -1,5 +1,5 @@
 import R from 'ramda';
-import crypto from 'crypto';
+
 import { getEnv, LoggerFn, createCacheHash } from '@cubejs-backend/shared';
 
 import { BaseDriver, CreateTableIndex, InlineTable, TableColumn, } from '@cubejs-backend/base-driver';

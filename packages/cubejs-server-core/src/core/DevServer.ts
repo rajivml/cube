@@ -13,7 +13,6 @@ import type { Application as ExpressApplication, NextFunction, Request, Response
 import type { ChildProcess } from 'child_process';
 import type { ServerResponse } from 'http';
 import { executeCommand, getAnonymousId, getEnv, keyByDataSource, packageExists, createCacheHash } from '@cubejs-backend/shared';
-import crypto from 'crypto';
 
 import type { BaseDriver } from '@cubejs-backend/query-orchestrator';
 
@@ -196,7 +195,6 @@ export class DevServer {
 # You can control which measures and dimensions are exposed to BIs or data apps,
 # as well as the direction of joins between the exposed cubes.
 # You can learn more about views in documentation here - https://docs.cube.dev/reference/data-modeling/view
-
 
 # The following example shows a view defined on top of orders and customers cubes.
 # Both orders and customers cubes are exposed using the "includes" parameter to

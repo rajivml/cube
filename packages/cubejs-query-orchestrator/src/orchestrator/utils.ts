@@ -1,5 +1,3 @@
-import crypto from 'crypto';
-
 import { getProcessUid, createCacheHash } from '@cubejs-backend/shared';
 import { QueryKey, QueryKeyHash } from '@cubejs-backend/base-driver';
 import { CacheKey, LocalRefreshKeyDescriptor } from './QueryCache';

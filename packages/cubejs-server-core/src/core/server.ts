@@ -1,5 +1,5 @@
 /* eslint-disable global-require,no-return-assign */
-import crypto from 'crypto';
+
 import fs from 'fs-extra';
 import { LRUCache } from 'lru-cache';
 import isDocker from 'is-docker';

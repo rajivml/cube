@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'async_hooks';
-import crypto from 'crypto';
+
 import vm from 'vm';
 import fs from 'fs';
 import os from 'os';
